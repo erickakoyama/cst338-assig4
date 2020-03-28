@@ -35,6 +35,9 @@ interface BarcodeIO {
  *
  */
 class BarcodeImage implements Cloneable {
+   public BarcodeImage clone() {
+      return new BarcodeImage(); // TEMP
+   }
 }
 
 /**
