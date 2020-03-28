@@ -41,6 +41,37 @@ class BarcodeImage implements Cloneable {
  *
  */
 class DataMatrix implements BarcodeIO {
+   
+   public DataMatrix()
+	{
+	  image = new BarcodeImage();
+	  text = "";
+	  actualWidth = 0;
+	  actualHeight = 0;
+	}
+   
+   public DataMatrix(BarcodeImage pix)
+	{
+	  if(!scan(pix))
+	   image = new BarcodeImage();
+	  else
+	  {
+      // in guideline need to use set "actualHeight" and "actualWidth" in scan(BarcodeImage bc)
+	  }
+
+	  text = "";
+	}
+   
+   public matrix(String text)
+	{
+	  image = new BarcodeImage();
+	  // need to use readText() method;
+	  
+	}
+   
+   public void readText(String text) //for constructor matrix(String text)
+   {
+   }
    public boolean scan(BarcodeImage bc) {
    }
 
