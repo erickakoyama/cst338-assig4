@@ -44,19 +44,33 @@ class BarcodeImage implements Cloneable {
  *
  */
 class DataMatrix implements BarcodeIO {
+   private BarcodeImage image;
+
    public boolean scan(BarcodeImage bc) {
+      return true;
    }
 
 
    public boolean readText(String text) {
+      return true;
    }
 
 
    public boolean generateImageFromText() {
+      return true;
+   }
+
+   private char readCharFromCol(int col) {
+      return 'T';
+   }
+
+   private boolean WriteCharToCol(int col, int code) {
+      return true;
    }
 
 
    public boolean translateImageToText() {
+      return true;
    }
 
 
