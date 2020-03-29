@@ -167,10 +167,15 @@ class BarcodeImage implements Cloneable {
 }
 
 /**
- *
+ * DataMatrix class is designed to encode and decode 2D barcodes.
  */
 class DataMatrix implements BarcodeIO {
+   public static final char BLACK_CHAR = '*';
+   public static final char WHITE_CHAR = ' ';
    private BarcodeImage image;
+   private String text;
+   private int actualWidth; // width of real signal
+   private int actualHeight; // height of real signal
 
    private void cleanImage() {
       // this method help to resize the image to the right position. get call by scan(barcodeImage pic)
@@ -197,47 +202,12 @@ class DataMatrix implements BarcodeIO {
    private void shiftImageDown(int offset) {}
    private void shiftImageLeft(int offset) {}
 
-   public boolean scan(BarcodeImage bc) {
-      return true;
-   }
-
-
-   public boolean readText(String text) {
-      return true;
-   }
-
-
-   public boolean generateImageFromText() {
-      return true;
-   }
-
-   private char readCharFromCol(int col) {
-      return 'T';
-   }
-
-   private boolean WriteCharToCol(int col, int code) {
-      return true;
-   }
-
-   private boolean[][] getMockImageGrid() {  // TODO: TEMP DO NOT SUBMIT THIS!!!!!
-      boolean[][] mockImageData = new boolean[][]{ // 6 x 20 grid, signal is already pushed to bottom-left
-            {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
-            {true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false},
-            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
-            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false},
-            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
-            {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false},
-      };
-
-      return mockImageData;
-   }
-
    /**
     * Compute the height of the signal.
     * Pre-condition: Signal is placed at bottom-left of image.
     * @return Height of signal.
     */
-   public int computeSignalHeight() { // TODO: Update this method once we get BarcodeImage data.
+   private int computeSignalHeight() { // TODO: Update this method once we get BarcodeImage data.
       int signalHeight = 0;
       boolean[][] mockImage = getMockImageGrid();
 
@@ -256,7 +226,7 @@ class DataMatrix implements BarcodeIO {
     * Pre-condition: Signal is placed at bottom-left of image.
     * @return Width of signal.
     */
-   public int computeSignalWidth() { // TODO: Update this method once we get BarcodeImage data.
+   private int computeSignalWidth() { // TODO: Update this method once we get BarcodeImage data.
       int signalWidth = 0;
       boolean[][] mockImage = getMockImageGrid();
 
@@ -273,15 +243,153 @@ class DataMatrix implements BarcodeIO {
       return signalWidth - 2; // subtract right and left spine
    }
 
-   public boolean translateImageToText() {
-      return true;
-   }
-
-
    public void displayTextToConsole() {
    }
 
-
    public void displayImageToConsole() {
    }
+
+   /**
+    * Generate image from internal text.
+    * @return Whether the image was able to be generated.
+    */
+   public boolean generateImageFromText() {
+      if (text == null) {
+         return false;
+      }
+
+      int stringSize = text.length() + 2;
+      String[] strData = new String[stringSize];
+      BarcodeImage newImage = new BarcodeImage();
+
+      // TODO: WIP
+
+
+      return true;
+   }
+
+   public int getActualHeight() {
+      return actualHeight;
+   }
+
+   public int getActualWidth() {
+      return actualWidth;
+   }
+
+   private boolean[][] getMockImageGrid() {  // TODO: TEMP DO NOT SUBMIT THIS!!!!!
+      boolean[][] mockImageData = new boolean[][]{ // 10 x 20 grid, signal is already pushed to bottom-left; extra blank column on right
+            {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, // blank row
+            {true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false},
+            {true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
+            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false},
+            {true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
+            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false},
+            {true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
+            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false},
+            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
+            {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false},
+      };
+
+      return mockImageData;
+   }
+
+   /**
+    * Read in a text string.
+    * @param text Text to use internally.
+    * @return Whether the text was able to be set.
+    */
+   public boolean readText(String text) {
+      boolean isValid = text != null && text.length() <= image.MAX_WIDTH - 2;
+
+      if (isValid) {
+         this.text = text;
+      }
+
+      return isValid;
+   }
+
+   public boolean scan(BarcodeImage bc) {
+      return true;
+   }
+
+   /**
+    * Get ASCII character from a single column in the data.
+    * @param col Column in data to read from.
+    * @return    Character represented by column.
+    */
+   public char readCharFromCol(int col) { // TODO: Update after BarcodeImage is done
+      int colValue = 0;
+      boolean[][] mockImage = getMockImageGrid();
+      int mockActualHeight = 8;
+      int startingRowIndex = mockImage.length - (mockActualHeight + 1);
+
+      // i should start from image.MAX_HEIGHT - (actualHeight + 1); i < image.MAX_HEIGHT - 1
+      for(int i = startingRowIndex; i < mockImage.length - 1; i++) {
+         if (mockImage[i][col]) {
+            int highestPowerOf2 = mockActualHeight - 1;
+            int offset = i - startingRowIndex;
+            colValue += Math.pow(2, highestPowerOf2 - offset);
+         }
+      }
+
+      return (char) colValue;
+   }
+
+   /**
+    * Generate text from internal image.
+    * @return Whether the text was able to be generated.
+    */
+   public boolean translateImageToText() {
+      if (image == null) {
+         return false;
+      }
+
+      String text = "";
+      int mockActualWidth = 8;
+
+      for (int i = 1; i <= mockActualWidth; i++) {
+         text += readCharFromCol(i);
+      }
+
+      this.text = text;
+
+      return true;
+   }
+
+   /**
+    * Encode an ASCII character into column of signal data.
+    * @param col  The column in the data to write the character.
+    * @param code The character in ASCII.
+    *             Whether the character was able to be written.
+    * @return
+    */
+   public boolean writeCharToCol(int col, int code) { // TODO: Update after BarcodeImage is done
+      if (code < 0 || code > 255) {
+         return false;
+      }
+
+      String binaryString = Integer.toBinaryString(code);
+      int stringLength = binaryString.length();
+      int mockActualHeight = 8;
+      boolean[][] mockImage = getMockImageGrid();
+      int startingRowIndex = mockImage.length - (mockActualHeight + 1);
+
+      // PadLeft
+      while (stringLength < mockActualHeight)
+      {
+         binaryString = "0" + binaryString;
+         stringLength++;
+      }
+
+      // i should start from image.MAX_HEIGHT - (actualHeight + 1); i < image.MAX_HEIGHT - 1
+      for(int i = startingRowIndex; i < mockImage.length - 1; i++) {
+         if (mockImage[i][col]) {
+            int offset = i - startingRowIndex;
+            mockImage[i][col] = binaryString.charAt(offset) == '1';
+         }
+      }
+
+      return true;
+   }
 }
+
