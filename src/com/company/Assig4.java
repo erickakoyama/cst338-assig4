@@ -430,7 +430,7 @@ class DataMatrix implements BarcodeIO {
     * @return Whether the text was able to be set.
     */
    public boolean readText(String text) {
-      boolean isValid = text != null && text.length() <= image.MAX_WIDTH - 2;
+      boolean isValid = text != null && text.length() > 0 && text.length() <= image.MAX_WIDTH - 2;
 
       if (isValid) {
          this.text = text;
