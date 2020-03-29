@@ -300,7 +300,7 @@ class DataMatrix implements BarcodeIO {
       image = new BarcodeImage(getPreFormattedMockStringInput()); // TODO: Remove this once we have constructors
       int signalWidth = 0;
 
-      while(image.getPixel(image.MAX_HEIGHT - 1, signalWidth)) signalWidth++;
+      while (image.getPixel(image.MAX_HEIGHT - 1, signalWidth)) signalWidth++;
 
       return signalWidth - 2; // subtract right and left spine
    }
@@ -315,10 +315,10 @@ class DataMatrix implements BarcodeIO {
     * Print out full image data including any blanks in top and right.
     */
    public void displayRawImage() {
-      for(int i = 0; i < image.MAX_HEIGHT; i++) {
+      for (int i = 0; i < image.MAX_HEIGHT; i++) {
          for (int j = 0; j < image.MAX_WIDTH; j++) {
             String maybeNewLine = j == image.MAX_WIDTH - 1 ? "\n" : ""; // newline to terminate row
-            System.out.print(image.getPixel(i,j) + maybeNewLine);
+            System.out.print(image.getPixel(i, j) + maybeNewLine);
          }
       }
    }
@@ -329,35 +329,37 @@ class DataMatrix implements BarcodeIO {
     * @return Whether the image was able to be generated.
     */
    public boolean generateImageFromText() {
-      if (text == null) {
+      if (text == null || text.length() == 0) {
          return false;
       }
 
       image = new BarcodeImage();
       actualHeight = 8; // ASCII Byte
       actualWidth = text.length();
+      int startingRowIndex = image.MAX_HEIGHT - (actualHeight + 2); // situate at bottom left corner
 
-      for (int i = 0; i < actualHeight + 1; i++) {
-         for (int j = 0; j < actualWidth + 1; j++) {
+      for (int i = startingRowIndex; i < image.MAX_HEIGHT; i++) {
+         for (int j = 0; j < actualWidth + 2; j++) {
+            System.out.println("i: " + i + ", j: " + j);
             if (j == 0) {// left spine solid
                image.setPixel(i, j, true);
-            } else if (i == 0 && j % 2 == 0) { // top spine alternating
+            } else if (i == startingRowIndex && j % 2 == 0) { // top spine alternating
                image.setPixel(i, j, true);
-            } else if (j == (actualWidth - 1)) {  // right border
+            } else if (j == (actualWidth + 1)) {  // right border
                if (actualWidth % 2 == 1) { // if text length is odd, then border alternates on evens
                   if (i % 2 == 0) image.setPixel(i, j, true);
                } else {
                   if (i % 2 == 1) image.setPixel(i, j, true);
                }
-            } else if (i == (actualHeight + 1)) { // bottom spine solid
+            } else if (i == (image.MAX_HEIGHT - 1)) { // bottom spine solid
                image.setPixel(i, j, true);
-            } else {
-               writeCharToCol(i, text.charAt(i)); // write the char
+            }
+
+            if (i == startingRowIndex && j < actualWidth) {
+               writeCharToCol(j + 1, (int) text.charAt(j)); // write char in j+1 column
             }
          }
       }
-
-      cleanImage(); // lower-left justify the signal
 
       return true;
    }
@@ -450,7 +452,7 @@ class DataMatrix implements BarcodeIO {
       int colValue = 0;
       int startingRowIndex = image.MAX_HEIGHT - (actualHeight + 1);
 
-      for(int i = startingRowIndex; i < image.MAX_HEIGHT - 1; i++) {
+      for (int i = startingRowIndex; i < image.MAX_HEIGHT - 1; i++) {
          if (image.getPixel(i, col)) {
             int highestPowerOf2 = actualHeight - 1;
             int offset = i - startingRowIndex;
@@ -494,29 +496,20 @@ class DataMatrix implements BarcodeIO {
     * @param code The character in ASCII. Whether the character was able to be written.
     * @return
     */
-   public boolean writeCharToCol(int col, int code) { // TODO: Update after BarcodeImage is done
-      if (code < 0 || code > 255) {
-         return false;
-      }
-
+   public boolean writeCharToCol(int col, int code) {
       String binaryString = Integer.toBinaryString(code);
       int stringLength = binaryString.length();
-      int mockActualHeight = 8;
-      boolean[][] mockImage = getMockImageGrid();
-      int startingRowIndex = mockImage.length - (mockActualHeight + 1);
+      int startingRowIndex = image.MAX_HEIGHT - (actualHeight + 1);
 
       // PadLeft
-      while (stringLength < mockActualHeight) {
+      while (stringLength < actualHeight) {
          binaryString = "0" + binaryString;
          stringLength++;
       }
 
-      // i should start from image.MAX_HEIGHT - (actualHeight + 1); i < image.MAX_HEIGHT - 1
-      for (int i = startingRowIndex; i < mockImage.length - 1; i++) {
-         if (mockImage[i][col]) {
-            int offset = i - startingRowIndex;
-//            image.setPixel(i, col, binaryString.charAt(offset) == '1');
-         }
+      for (int i = startingRowIndex; i < image.MAX_HEIGHT - 1; i++) {
+         int offset = i - startingRowIndex;
+         image.setPixel(i, col, binaryString.charAt(offset) == '1');
       }
 
       return true;
