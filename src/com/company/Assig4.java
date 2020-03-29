@@ -441,20 +441,18 @@ class DataMatrix implements BarcodeIO {
 
    /**
     * Get ASCII character from a single column in the data.
+    * Pre-condition: Image is scanned-in and cleaned.
     *
     * @param col Column in data to read from.
     * @return Character represented by column.
     */
-   public char readCharFromCol(int col) { // TODO: Update after BarcodeImage is done
+   public char readCharFromCol(int col) {
       int colValue = 0;
-      boolean[][] mockImage = getMockImageGrid();
-      int mockActualHeight = 8;
-      int startingRowIndex = mockImage.length - (mockActualHeight + 1);
+      int startingRowIndex = image.MAX_HEIGHT - (actualHeight + 1);
 
-      // i should start from image.MAX_HEIGHT - (actualHeight + 1); i < image.MAX_HEIGHT - 1
-      for (int i = startingRowIndex; i < mockImage.length - 1; i++) {
-         if (mockImage[i][col]) {
-            int highestPowerOf2 = mockActualHeight - 1;
+      for(int i = startingRowIndex; i < image.MAX_HEIGHT - 1; i++) {
+         if (image.getPixel(i, col)) {
+            int highestPowerOf2 = actualHeight - 1;
             int offset = i - startingRowIndex;
             colValue += Math.pow(2, highestPowerOf2 - offset);
          }
@@ -469,6 +467,7 @@ class DataMatrix implements BarcodeIO {
 
    /**
     * Generate text from internal image.
+    * Pre-condition: Image is scanned-in and cleaned.
     *
     * @return Whether the text was able to be generated.
     */
@@ -478,9 +477,8 @@ class DataMatrix implements BarcodeIO {
       }
 
       String text = "";
-      int mockActualWidth = 8;
 
-      for (int i = 1; i <= mockActualWidth; i++) {
+      for (int i = 1; i <= actualWidth; i++) {
          text += readCharFromCol(i);
       }
 
