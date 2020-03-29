@@ -1,9 +1,8 @@
 package com.company;
 //
+
 /**
- * Project Members: Ericka Koyama, Holly Stephens, Ngoc Tran Do
- * CST 338 Software Design
- * Assignment 4 - Barcode Scanner
+ * Project Members: Ericka Koyama, Holly Stephens, Ngoc Tran Do CST 338 Software Design Assignment 4 - Barcode Scanner
  */
 
 
@@ -106,22 +105,22 @@ class BarcodeImage implements Cloneable {
     * Default constructor. Instatiates a 2D array.
     */
    BarcodeImage() {
-         imageData = new boolean[MAX_HEIGHT][MAX_WIDTH];
-         for(int row = 0; row < MAX_HEIGHT; row++) {
-            for(int col = 0; col < MAX_WIDTH; col++) {
-               imageData[row][col] = false;
-            }
+      imageData = new boolean[MAX_HEIGHT][MAX_WIDTH];
+      for (int row = 0; row < MAX_HEIGHT; row++) {
+         for (int col = 0; col < MAX_WIDTH; col++) {
+            imageData[row][col] = false;
          }
+      }
    }
 
    /**
     * Overloaded constructor. Takes a 1D array of Strings and converts it to a 2D array.
+    *
     * @param strData The 1D array of Strings to convert.
     */
    BarcodeImage(String[] strData) {
       imageData = new boolean[MAX_HEIGHT][MAX_WIDTH];
-      if(checkSize(strData))
-      {
+      if (checkSize(strData)) {
          /**
           * Read string array in bottom up to pad to lower left corner.
           * Since [0][0] is the top left corner, this means [MAX_HEIGHT][0] is our starting position.
@@ -130,29 +129,30 @@ class BarcodeImage implements Cloneable {
          int row = MAX_HEIGHT;
          /**
           * Grab strings in reverse order from strData
-          * col will correspond to both the current position of the current string and the current position of our inner 2D array.
-          */ 
-         for(int i = strData.length; i > 0; i--) {
-            String line = strData[i-1];
+          * col will correspond to both the current position of the current string and the current position of our
+          * inner 2D array.
+          */
+         for (int i = strData.length; i > 0; i--) {
+            String line = strData[i - 1];
             int col = 0;
             /*
              * We want to fill our 2D array with false values after we exceed the length of our string.
              * This is why it's necessary to loop through MAX_WIDTH each time.
              */
-            while(col < MAX_WIDTH) {
+            while (col < MAX_WIDTH) {
                boolean value = false; // Default value.
-               if(col < line.length()) { // Check that we've not exceeded string length before trying to access data.
-                  value = (line.charAt(col) == '*')? true : false; // Assign boolean representation of string data.
+               if (col < line.length()) { // Check that we've not exceeded string length before trying to access data.
+                  value = (line.charAt(col) == '*') ? true : false; // Assign boolean representation of string data.
                }
-               imageData[row-1][col] = value;
+               imageData[row - 1][col] = value;
                col++;
             }
             row--; // Decrement row as we loop to grab the next string.
          }
          // Fill top remaining space in imageData with false.
-         while(row > 0){
-            for(int j = 0; j < MAX_WIDTH; j++) {
-               imageData[row-1][j] = false;
+         while (row > 0) {
+            for (int j = 0; j < MAX_WIDTH; j++) {
+               imageData[row - 1][j] = false;
             }
             row--;
          }
@@ -161,12 +161,13 @@ class BarcodeImage implements Cloneable {
 
    /**
     * Accessor for each bit in the image.
+    *
     * @param row The position of the outer array.
     * @param col The position of the inner array.
     * @return The data in the specified location or false if there is an error accessing the data.
     */
    public boolean getPixel(int row, int col) {
-      if(row < MAX_HEIGHT && col < MAX_WIDTH) {
+      if (row < MAX_HEIGHT && col < MAX_WIDTH) {
          return imageData[row][col];
       }
       return false;
@@ -174,13 +175,14 @@ class BarcodeImage implements Cloneable {
 
    /**
     * Accessor for each bit in the image.
-    * @param row The position of the outer array.
-    * @param col The position of the inner array.
+    *
+    * @param row   The position of the outer array.
+    * @param col   The position of the inner array.
     * @param value The value to be placed in the specified location.
     * @return True on success, false on failure.
     */
    public boolean setPixel(int row, int col, boolean value) {
-      if(row < MAX_HEIGHT && col < MAX_WIDTH) {
+      if (row < MAX_HEIGHT && col < MAX_WIDTH) {
          imageData[row][col] = value;
          return true;
       }
@@ -189,26 +191,26 @@ class BarcodeImage implements Cloneable {
 
    /**
     * Utility method. Checks the incoming data for every conceivable size or null error.
+    *
     * @param data The image data.
     * @return True if data is okay, false otherwise.
     */
    private boolean checkSize(String[] data) {
-      if(null == data || data.length >= MAX_HEIGHT) return false;
-      for(int i = 0; i < data.length; i++) {
-         if(null == data[i] || data[i].length() >= MAX_WIDTH) return false;
+      if (null == data || data.length >= MAX_HEIGHT) return false;
+      for (int i = 0; i < data.length; i++) {
+         if (null == data[i] || data[i].length() >= MAX_WIDTH) return false;
       }
       return true;
    }
 
    /**
-    * Utility method. Outputs the contents of imageData.
-    * Converts back to the image format 
+    * Utility method. Outputs the contents of imageData. Converts back to the image format
     */
    public void displayToConsole() {
-      for(int i = 0; i < MAX_HEIGHT; i++) {
+      for (int i = 0; i < MAX_HEIGHT; i++) {
          String line = "";
-         for(int j = 0; j < MAX_WIDTH; j++) {
-            String value = (imageData[i][j])? "*" : " ";
+         for (int j = 0; j < MAX_WIDTH; j++) {
+            String value = (imageData[i][j]) ? "*" : " ";
             line = line + value;
          }
          System.out.println(line);
@@ -217,13 +219,13 @@ class BarcodeImage implements Cloneable {
 
    /**
     * An override of the clone method in Cloneable interface.
+    *
     * @return a copy of the BarcodeImage object.
     */
    public BarcodeImage clone() throws CloneNotSupportedException {
       try {
          return (BarcodeImage) super.clone();
-      }
-      catch(CloneNotSupportedException e) {
+      } catch (CloneNotSupportedException e) {
          return null;
       }
    }
@@ -241,37 +243,34 @@ class DataMatrix implements BarcodeIO {
    private int actualHeight; // height of real signal
 
    private void cleanImage() {
-   // this method help to resize the image to the right position. get call by scan(barcodeImage pic)
-	// somehow take bc obj(from mainclass), and since the object should contain the updated array size?
-	// to have an 2d array
-	 
-		boolean[][] newImage = new boolean[47][16]; //1st string example 
-				int amountColtoMove = 0, downNum = 1, numRowToDelete;
-				int maxRow= newImage.length;
+      boolean[][] newImage = new boolean[47][16]; //1st string example
+      int amountColtoMove = 0, downNum = 1, numRowToDelete;
+      int maxRow = newImage.length;
 
-				for ( int i = 0; i < newImage.length; i++ ) {
-				    for ( int j = 0; j < newImage[i].length; j++ ) {
-				        if ( newImage[i][j] == true) {
-				        	amountColtoMove = j;
-				        	downNum++;
-				        	break;
-				        } 
-				    }
-				}
-				numRowToDelete = maxRow - downNum;
-				newImage = shiftImage(numRowToDelete,amountColtoMove, newImage);
+      for (int i = 0; i < newImage.length; i++) {
+         for (int j = 0; j < newImage[i].length; j++) {
+            if (newImage[i][j] == true) {
+               amountColtoMove = j;
+               downNum++;
+               break;
+            }
+         }
+      }
+      numRowToDelete = maxRow - downNum;
+      newImage = shiftImage(numRowToDelete, amountColtoMove, newImage);
 
-	}
-	private boolean[][] shiftImage(int offset1, int offset2, boolean img[][]) {
-		
-		boolean[][] shiftedArray = new boolean[img.length][img[0].length];
-		for (int row = 0; row < img.length; row++) {
-		    for (int col = 0; col < img[row].length; col++) {
-		    	shiftedArray[row][col] = img[row][(col + 1) % img[row].length];
-		    }
-		}
-		return shiftedArray;
-	}
+   }
+
+   private boolean[][] shiftImage(int offset1, int offset2, boolean img[][]) {
+
+      boolean[][] shiftedArray = new boolean[img.length][img[0].length];
+      for (int row = 0; row < img.length; row++) {
+         for (int col = 0; col < img[row].length; col++) {
+            shiftedArray[row][col] = img[row][(col + 1) % img[row].length];
+         }
+      }
+      return shiftedArray;
+   }
 
    /**
     * Compute the height of the signal.
@@ -314,6 +313,7 @@ class DataMatrix implements BarcodeIO {
 
    /**
     * Generate image from internal text.
+    *
     * @return Whether the image was able to be generated.
     */
    public boolean generateImageFromText() {
@@ -325,13 +325,13 @@ class DataMatrix implements BarcodeIO {
       actualHeight = 8; // ASCII Byte
       actualWidth = text.length();
 
-      for(int i = 0; i < actualHeight + 1; i++) {
+      for (int i = 0; i < actualHeight + 1; i++) {
          for (int j = 0; j < actualWidth + 1; j++) {
             if (j == 0) {// left spine solid
                image.setPixel(i, j, true);
             } else if (i == 0 && j % 2 == 0) { // top spine alternating
                image.setPixel(i, j, true);
-            } else if (j == (actualWidth -1)) {  // right border
+            } else if (j == (actualWidth - 1)) {  // right border
                if (actualWidth % 2 == 1) { // if text length is odd, then border alternates on evens
                   if (i % 2 == 0) image.setPixel(i, j, true);
                } else {
@@ -359,17 +359,28 @@ class DataMatrix implements BarcodeIO {
    }
 
    private boolean[][] getMockImageGrid() {  // TODO: TEMP DO NOT SUBMIT THIS!!!!!
-      boolean[][] mockImageData = new boolean[][]{ // 10 x 20 grid, signal is already pushed to bottom-left; extra blank column on right
-            {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false}, // blank row
-            {true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false},
-            {true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
-            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false},
-            {true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
-            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false},
-            {true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
-            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false},
-            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
-            {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, false},
+      boolean[][] mockImageData = new boolean[][]{ // 10 x 20 grid, signal is already pushed to bottom-left; extra
+            // blank column on right
+            {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+                  false, false, false, false, false}, // blank row
+            {true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false,
+                  true, false, true, false},
+            {true, true, false, false, false, false, false, false, false, false, false, false, false, false, false,
+                  false, false, false, false, false},
+            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+                  false, false, false, true, false},
+            {true, true, false, false, false, false, false, false, false, false, false, false, false, false, false,
+                  false, false, false, false, false},
+            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+                  false, false, false, true, false},
+            {true, true, false, false, false, false, false, false, false, false, false, false, false, false, false,
+                  false, false, false, false, false},
+            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+                  false, false, false, true, false},
+            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+                  false, false, false, false, false},
+            {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+                  true, true, false},
       };
 
       return mockImageData;
@@ -402,6 +413,7 @@ class DataMatrix implements BarcodeIO {
 
    /**
     * Read in a text string.
+    *
     * @param text Text to use internally.
     * @return Whether the text was able to be set.
     */
@@ -417,8 +429,9 @@ class DataMatrix implements BarcodeIO {
 
    /**
     * Get ASCII character from a single column in the data.
+    *
     * @param col Column in data to read from.
-    * @return    Character represented by column.
+    * @return Character represented by column.
     */
    public char readCharFromCol(int col) { // TODO: Update after BarcodeImage is done
       int colValue = 0;
@@ -427,7 +440,7 @@ class DataMatrix implements BarcodeIO {
       int startingRowIndex = mockImage.length - (mockActualHeight + 1);
 
       // i should start from image.MAX_HEIGHT - (actualHeight + 1); i < image.MAX_HEIGHT - 1
-      for(int i = startingRowIndex; i < mockImage.length - 1; i++) {
+      for (int i = startingRowIndex; i < mockImage.length - 1; i++) {
          if (mockImage[i][col]) {
             int highestPowerOf2 = mockActualHeight - 1;
             int offset = i - startingRowIndex;
@@ -444,6 +457,7 @@ class DataMatrix implements BarcodeIO {
 
    /**
     * Generate text from internal image.
+    *
     * @return Whether the text was able to be generated.
     */
    public boolean translateImageToText() {
@@ -465,9 +479,9 @@ class DataMatrix implements BarcodeIO {
 
    /**
     * Encode an ASCII character into column of signal data.
+    *
     * @param col  The column in the data to write the character.
-    * @param code The character in ASCII.
-    *             Whether the character was able to be written.
+    * @param code The character in ASCII. Whether the character was able to be written.
     * @return
     */
    public boolean writeCharToCol(int col, int code) { // TODO: Update after BarcodeImage is done
@@ -482,14 +496,13 @@ class DataMatrix implements BarcodeIO {
       int startingRowIndex = mockImage.length - (mockActualHeight + 1);
 
       // PadLeft
-      while (stringLength < mockActualHeight)
-      {
+      while (stringLength < mockActualHeight) {
          binaryString = "0" + binaryString;
          stringLength++;
       }
 
       // i should start from image.MAX_HEIGHT - (actualHeight + 1); i < image.MAX_HEIGHT - 1
-      for(int i = startingRowIndex; i < mockImage.length - 1; i++) {
+      for (int i = startingRowIndex; i < mockImage.length - 1; i++) {
          if (mockImage[i][col]) {
             int offset = i - startingRowIndex;
 //            image.setPixel(i, col, binaryString.charAt(offset) == '1');
