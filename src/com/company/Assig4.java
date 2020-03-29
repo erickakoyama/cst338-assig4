@@ -258,12 +258,31 @@ class DataMatrix implements BarcodeIO {
          return false;
       }
 
-      int stringSize = text.length() + 2;
-      String[] strData = new String[stringSize];
-      BarcodeImage newImage = new BarcodeImage();
+      image = new BarcodeImage();
+      actualHeight = 8; // ASCII Byte
+      actualWidth = text.length();
 
-      // TODO: WIP
+      for(int i = 0; i < actualHeight + 1; i++) {
+         for (int j = 0; j < actualWidth + 1; j++) {
+            if (j == 0) {// left spine solid
+               image.setPixel(i, j, true);
+            } else if (i == 0 && j % 2 == 0) { // top spine alternating
+               image.setPixel(i, j, true);
+            } else if (j == (actualWidth -1)) {  // right border
+               if (actualWidth % 2 == 1) { // if text length is odd, then border alternates on evens
+                  if (i % 2 == 0) image.setPixel(i, j, true);
+               } else {
+                  if (i % 2 == 1) image.setPixel(i, j, true);
+               }
+            } else if (i == (actualHeight + 1)) { // bottom spine solid
+               image.setPixel(i, j, true);
+            } else {
+               writeCharToCol(i, text.charAt(i)); // write the char
+            }
+         }
+      }
 
+      cleanImage(); // lower-left justify the signal
 
       return true;
    }
@@ -385,7 +404,7 @@ class DataMatrix implements BarcodeIO {
       for(int i = startingRowIndex; i < mockImage.length - 1; i++) {
          if (mockImage[i][col]) {
             int offset = i - startingRowIndex;
-            mockImage[i][col] = binaryString.charAt(offset) == '1';
+//            image.setPixel(i, col, binaryString.charAt(offset) == '1');
          }
       }
 
