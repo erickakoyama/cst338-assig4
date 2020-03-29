@@ -172,6 +172,31 @@ class BarcodeImage implements Cloneable {
 class DataMatrix implements BarcodeIO {
    private BarcodeImage image;
 
+   private void cleanImage() {
+      // this method help to resize the image to the right position. get call by scan(barcodeImage pic)
+      /// somehow take bc obj(from mainclass), and since the object should contain the updated array size?
+      // to have an 2d array /
+      boolean newImage[][] = new boolean[47][16]; //1st string example
+      int amountColtoMove = 0, downNum = 1, numRowToDelete;
+      int maxRow = newImage.length;
+
+      for ( int i = 0; i < newImage.length; i++ ) {
+         for ( int j = 0; j < newImage[i].length; j++ ) {
+            if ( newImage[i][j] == true) {
+               amountColtoMove = j;
+               downNum++;
+               break;
+            }
+         }
+      }
+      numRowToDelete = maxRow - downNum;
+      shiftImageDown(numRowToDelete);
+      shiftImageLeft(amountColtoMove);
+   }
+
+   private void shiftImageDown(int offset) {}
+   private void shiftImageLeft(int offset) {}
+
    public boolean scan(BarcodeImage bc) {
       return true;
    }
