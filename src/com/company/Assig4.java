@@ -312,6 +312,18 @@ class DataMatrix implements BarcodeIO {
    }
 
    /**
+    * Print out full image data including any blanks in top and right.
+    */
+   public void displayRawImage() {
+      for(int i = 0; i < image.MAX_HEIGHT; i++) {
+         for (int j = 0; j < image.MAX_WIDTH; j++) {
+            String maybeNewLine = j == image.MAX_WIDTH - 1 ? "\n" : ""; // newline to terminate row
+            System.out.print(image.getPixel(i,j) + maybeNewLine);
+         }
+      }
+   }
+
+   /**
     * Generate image from internal text.
     *
     * @return Whether the image was able to be generated.
