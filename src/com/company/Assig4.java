@@ -32,7 +32,7 @@ interface BarcodeIO {
 }
 
 /**
- * Store and retreive the 2D data.
+ * Store and retrieve the 2D data.
  */
 class BarcodeImage implements Cloneable {
    public static final int MAX_HEIGHT = 30;
