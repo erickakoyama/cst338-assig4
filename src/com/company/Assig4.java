@@ -267,16 +267,16 @@ class DataMatrix implements BarcodeIO {
 
    /**
     * Compute the height of the signal.
-    * Pre-condition: Signal is placed at bottom-left of image.
+    * Pre-condition: Image is scanned-in and cleaned.
     * @return Height of signal.
     */
-   private int computeSignalHeight() { // TODO: Update this method once we get BarcodeImage data.
+   private int computeSignalHeight() {
+      image = new BarcodeImage(getPreFormattedMockStringInput()); // TODO: Remove this once we have constructors
       int signalHeight = 0;
-      boolean[][] mockImage = getMockImageGrid();
 
-      for (int i = 0; i < mockImage.length; i++) { // should be i < image.MAX_HEIGHT
-         if (mockImage[i][0]) { // if the square is black, it's the top of the spine
-            signalHeight = (mockImage.length - i) - 2; // subtract top and bottom spine from signal height
+      for (int i = 0; i < image.MAX_HEIGHT; i++) { // should be i < image.MAX_HEIGHT
+         if (image.getPixel(i, 0)) { // if the square is black, it's the top of the spine
+            signalHeight = (image.MAX_HEIGHT - i) - 2; // subtract top and bottom spine from signal height
             break;
          }
       }
@@ -286,22 +286,14 @@ class DataMatrix implements BarcodeIO {
 
    /**
     * Compute the width of the signal.
-    * Pre-condition: Signal is placed at bottom-left of image.
+    * Pre-condition: Image is scanned-in and cleaned.
     * @return Width of signal.
     */
-   private int computeSignalWidth() { // TODO: Update this method once we get BarcodeImage data.
+   private int computeSignalWidth() {
+      image = new BarcodeImage(getPreFormattedMockStringInput()); // TODO: Remove this once we have constructors
       int signalWidth = 0;
-      boolean[][] mockImage = getMockImageGrid();
 
-      boolean[] bottomRow = mockImage[mockImage.length - 1];
-
-      for (boolean cell: bottomRow) {
-         if (cell) {
-            signalWidth++;
-         } else {
-            break;
-         }
-      }
+      while(image.getPixel(image.MAX_HEIGHT - 1, signalWidth)) signalWidth++;
 
       return signalWidth - 2; // subtract right and left spine
    }
@@ -373,6 +365,31 @@ class DataMatrix implements BarcodeIO {
       };
 
       return mockImageData;
+   }
+
+   private String[] getPreFormattedMockStringInput() { // TODO: TEMP DO NOT SUBMIT THIS
+      String[] sImage_preformat =
+            new String[]{
+                  "                                          ",
+                  "                                          ",
+                  "                                          ",
+                  "                                          ",
+                  "                                          ",
+                  "                                          ",
+                  "* * * * * * * * * * * * * * * * * * *     ",
+                  "*                                    *    ",
+                  "**** *** **   ***** ****   *********      ",
+                  "* ************ ************ **********    ",
+                  "** *      *    *  * * *         * *       ",
+                  "***   *  *           * **    *      **    ",
+                  "* ** * *  *   * * * **  *   ***   ***     ",
+                  "* *           **    *****  *   **   **    ",
+                  "****  *  * *  * **  ** *   ** *  * *      ",
+                  "**************************************    ",
+
+            };
+
+      return sImage_preformat;
    }
 
    /**
