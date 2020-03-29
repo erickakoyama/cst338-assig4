@@ -327,10 +327,6 @@ class DataMatrix implements BarcodeIO {
       return isValid;
    }
 
-   public boolean scan(BarcodeImage bc) {
-      return true;
-   }
-
    /**
     * Get ASCII character from a single column in the data.
     * @param col Column in data to read from.
@@ -352,6 +348,10 @@ class DataMatrix implements BarcodeIO {
       }
 
       return (char) colValue;
+   }
+
+   public boolean scan(BarcodeImage bc) {
+      return true;
    }
 
    /**
