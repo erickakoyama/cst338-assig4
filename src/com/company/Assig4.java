@@ -341,7 +341,7 @@ class DataMatrix implements BarcodeIO {
          for (int j = 0; j < actualWidth + 2; j++) {
             String maybeNewLine = j == actualWidth + 1 ? "\n" : ""; // newline to terminate row
             char symbolToPrint = image.getPixel(i, j) ? BLACK_CHAR : WHITE_CHAR;
-            System.out.print( symbolToPrint + maybeNewLine);
+            System.out.print(symbolToPrint + maybeNewLine);
          }
       }
    }
