@@ -276,10 +276,9 @@ class DataMatrix implements BarcodeIO {
     * Utility method that sets the image to white (false).
     */
    private void clearImage() {
-      boolean[][] tempImage = new boolean[47][16];
-      for(int row = 0; row < tempImage.length; row++) {
-         for(int col = 0; col < tempImage[row].length; col++) {
-            tempImage[row][col] = false;
+      for(int row = 0; row < this.image.length; row++) {
+         for(int col = 0; col < this.image[row].length; col++) {
+            this.image.setPixel(row, col, false);
          }
       }
    }
