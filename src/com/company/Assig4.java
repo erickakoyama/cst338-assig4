@@ -77,19 +77,38 @@ public class Assig4 {
 }
 
 /**
- *
+ * BarcodeIO interface that will be implemented by other classes.
+ * Used to store some version of an image and some version of the text associated with that image. 
  */
 interface BarcodeIO {
+  /**
+    * Accepts and stores a copy of an image represented by BarcodeImage.
+    */
    public boolean scan(BarcodeImage bc);
 
+   /**
+    * Accepts a text string that will be encoded in an image later.
+    */
    public boolean readText(String text);
 
+   /**
+    * Creates an image (BarcodeImage) from the text stored in the implementing class.
+    */
    public boolean generateImageFromText();
 
+   /**
+    * Creates a text string from an image (BarcodeImage).
+    */
    public boolean translateImageToText();
 
+   /**
+    *  Print out the text string to the console.
+    */
    public void displayTextToConsole();
 
+   /**
+    * Print out the image to the console.
+    */
    public void displayImageToConsole();
 }
 
