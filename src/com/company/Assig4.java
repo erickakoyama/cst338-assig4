@@ -271,6 +271,18 @@ class DataMatrix implements BarcodeIO {
       }
       return shiftedArray;
    }
+   
+   /**
+    * Utility method that sets the image to white (false).
+    */
+   private void clearImage() {
+      boolean[][] tempImage = new boolean[47][16];
+      for(int row = 0; row < tempImage.length; row++) {
+         for(int col = 0; col < tempImage[row].length; col++) {
+            tempImage[row][col] = false;
+         }
+      }
+   }
 
    /**
     * Compute the height of the signal.
