@@ -9,52 +9,52 @@ package com.company;
 public class Assig4 {
 
    public static void main(String[] args) {
-      String[] sImageIn =
-            {
-                  "                                               ",
-                  "                                               ",
-                  "                                               ",
-                  "     * * * * * * * * * * * * * * * * * * * * * ",
-                  "     *                                       * ",
-                  "     ****** **** ****** ******* ** *** *****   ",
-                  "     *     *    ****************************** ",
-                  "     * **    * *        **  *    * * *   *     ",
-                  "     *   *    *  *****    *   * *   *  **  *** ",
-                  "     *  **     * *** **   **  *    **  ***  *  ",
-                  "     ***  * **   **  *   ****    *  *  ** * ** ",
-                  "     *****  ***  *  * *   ** ** **  *   * *    ",
-                  "     ***************************************** ",
-                  "                                               ",
-                  "                                               ",
-                  "                                               "
-
-            };
-
-
-
-      String[] sImageIn_2 =
-            {
-                  "                                          ",
-                  "                                          ",
-                  "* * * * * * * * * * * * * * * * * * *     ",
-                  "*                                    *    ",
-                  "**** *** **   ***** ****   *********      ",
-                  "* ************ ************ **********    ",
-                  "** *      *    *  * * *         * *       ",
-                  "***   *  *           * **    *      **    ",
-                  "* ** * *  *   * * * **  *   ***   ***     ",
-                  "* *           **    *****  *   **   **    ",
-                  "****  *  * *  * **  ** *   ** *  * *      ",
-                  "**************************************    ",
-                  "                                          ",
-                  "                                          ",
-                  "                                          ",
-                  "                                          "
-
-            };
+//      String[] sImageIn =
+//            {
+//                  "                                               ",
+//                  "                                               ",
+//                  "                                               ",
+//                  "     * * * * * * * * * * * * * * * * * * * * * ",
+//                  "     *                                       * ",
+//                  "     ****** **** ****** ******* ** *** *****   ",
+//                  "     *     *    ****************************** ",
+//                  "     * **    * *        **  *    * * *   *     ",
+//                  "     *   *    *  *****    *   * *   *  **  *** ",
+//                  "     *  **     * *** **   **  *    **  ***  *  ",
+//                  "     ***  * **   **  *   ****    *  *  ** * ** ",
+//                  "     *****  ***  *  * *   ** ** **  *   * *    ",
+//                  "     ***************************************** ",
+//                  "                                               ",
+//                  "                                               ",
+//                  "                                               "
+//
+//            };
+//
+//
+//
+//      String[] sImageIn_2 =
+//            {
+//                  "                                          ",
+//                  "                                          ",
+//                  "* * * * * * * * * * * * * * * * * * *     ",
+//                  "*                                    *    ",
+//                  "**** *** **   ***** ****   *********      ",
+//                  "* ************ ************ **********    ",
+//                  "** *      *    *  * * *         * *       ",
+//                  "***   *  *           * **    *      **    ",
+//                  "* ** * *  *   * * * **  *   ***   ***     ",
+//                  "* *           **    *****  *   **   **    ",
+//                  "****  *  * *  * **  ** *   ** *  * *      ",
+//                  "**************************************    ",
+//                  "                                          ",
+//                  "                                          ",
+//                  "                                          ",
+//                  "                                          "
+//
+//            };
 
 //      BarcodeImage bc = new BarcodeImage(sImageIn);
-//      DataMatrix dm = new DataMatrix(bc);
+      DataMatrix dm = new DataMatrix();
 //
 //      // First secret message
 //      dm.translateImageToText();
@@ -68,11 +68,11 @@ public class Assig4 {
 //      dm.displayTextToConsole();
 //      dm.displayImageToConsole();
 //
-//      // create your own message
-//      dm.readText("What a great resume builder this is!");
-//      dm.generateImageFromText();
-//      dm.displayTextToConsole();
-//      dm.displayImageToConsole();
+      // create your own message
+      dm.readText("What a great resume builder this is!");
+      dm.generateImageFromText();
+      dm.displayTextToConsole();
+      dm.displayImageToConsole();
    }
 }
 
@@ -305,10 +305,25 @@ class DataMatrix implements BarcodeIO {
       return signalWidth - 2; // subtract right and left spine
    }
 
+   /**
+    * Print out internal text.
+    */
    public void displayTextToConsole() {
+      System.out.println("The text stored is: " + text);
    }
 
+   /**
+    * Print the image without top-right blanks to the console.
+    */
    public void displayImageToConsole() {
+      int startingRowIndex = image.MAX_HEIGHT - (actualHeight + 2);
+
+      for (int i = startingRowIndex; i < image.MAX_HEIGHT; i++) {
+         for (int j = 0; j < actualWidth + 2; j++) {
+            String maybeNewLine = j == actualWidth + 1 ? "\n" : ""; // newline to terminate row
+            System.out.print(image.getPixel(i, j) + maybeNewLine);
+         }
+      }
    }
 
    /**
@@ -340,7 +355,6 @@ class DataMatrix implements BarcodeIO {
 
       for (int i = startingRowIndex; i < image.MAX_HEIGHT; i++) {
          for (int j = 0; j < actualWidth + 2; j++) {
-            System.out.println("i: " + i + ", j: " + j);
             if (j == 0) {// left spine solid
                image.setPixel(i, j, true);
             } else if (i == startingRowIndex && j % 2 == 0) { // top spine alternating
