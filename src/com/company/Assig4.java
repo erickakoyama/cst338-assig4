@@ -119,7 +119,7 @@ class BarcodeImage implements Cloneable {
    private boolean[][] imageData; // Stores the inbound image. White = false, black = true.
 
    /**
-    * Default constructor. Instatiates a 2D array.
+    * Default constructor. Instantiates a 2D array.
     */
    BarcodeImage() {
       imageData = new boolean[MAX_HEIGHT][MAX_WIDTH];
@@ -281,6 +281,7 @@ class DataMatrix implements BarcodeIO {
 
       if (!readText(text))
          text = "";
+
       actualWidth = 0;
       actualHeight = 0;
    }
@@ -370,7 +371,7 @@ class DataMatrix implements BarcodeIO {
 
       while (image.getPixel(image.MAX_HEIGHT - 1, signalWidth)) signalWidth++;
 
-      return signalWidth - 2; // subtract right and left spine
+      return signalWidth > 0 ? signalWidth - 2: signalWidth; // subtract right and left spine
    }
 
    /**
@@ -402,6 +403,7 @@ class DataMatrix implements BarcodeIO {
     */
    public void displayRawImage() {
       if (image == null) return;
+
       for (int i = 0; i < image.MAX_HEIGHT; i++) {
          for (int j = 0; j < image.MAX_WIDTH; j++) {
             String maybeNewLine = j == image.MAX_WIDTH - 1 ? "\n" : ""; // newline to terminate row
