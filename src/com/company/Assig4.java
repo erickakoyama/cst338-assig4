@@ -1,5 +1,4 @@
 package com.company;
-//
 
 /**
  * Project Members: Ericka Koyama, Holly Stephens, Ngoc Tran Do CST 338 Software Design Assignment 4 - Barcode Scanner
@@ -214,9 +213,9 @@ class BarcodeImage implements Cloneable {
     * @return True if data is okay, false otherwise.
     */
    private boolean checkSize(String[] data) {
-      if (null == data || data.length >= MAX_HEIGHT) return false;
+      if (null == data || data.length > MAX_HEIGHT) return false;
       for (int i = 0; i < data.length; i++) {
-         if (null == data[i] || data[i].length() >= MAX_WIDTH) return false;
+         if (null == data[i] || data[i].length() > MAX_WIDTH) return false;
       }
       return true;
    }
@@ -351,7 +350,7 @@ class DataMatrix implements BarcodeIO {
    private int computeSignalHeight() {
       int signalHeight = 0;
 
-      for (int i = 0; i < image.MAX_HEIGHT; i++) { // should be i < image.MAX_HEIGHT
+      for (int i = 0; i < image.MAX_HEIGHT; i++) {
          if (image.getPixel(i, 0)) { // if the square is black, it's the top of the spine
             signalHeight = (image.MAX_HEIGHT - i) - 2; // subtract top and bottom spine from signal height
             break;
@@ -385,6 +384,8 @@ class DataMatrix implements BarcodeIO {
     * Print the image without top-right blanks to the console.
     */
    public void displayImageToConsole() {
+      if (image == null) return;
+
       int startingRowIndex = image.MAX_HEIGHT - (actualHeight + 2);
 
       for (int i = startingRowIndex; i < image.MAX_HEIGHT; i++) {
@@ -400,6 +401,7 @@ class DataMatrix implements BarcodeIO {
     * Print out full image data including any blanks in top and right.
     */
    public void displayRawImage() {
+      if (image == null) return;
       for (int i = 0; i < image.MAX_HEIGHT; i++) {
          for (int j = 0; j < image.MAX_WIDTH; j++) {
             String maybeNewLine = j == image.MAX_WIDTH - 1 ? "\n" : ""; // newline to terminate row
@@ -456,59 +458,6 @@ class DataMatrix implements BarcodeIO {
       return actualWidth;
    }
 
-   private boolean[][] getMockImageGrid() {  // TODO: TEMP DO NOT SUBMIT THIS!!!!!
-      boolean[][] mockImageData = new boolean[][]{ // 10 x 20 grid, signal is already pushed to bottom-left; extra
-            // blank column on right
-            {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-                  false, false, false, false, false}, // blank row
-            {true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false,
-                  true, false, true, false},
-            {true, true, false, false, false, false, false, false, false, false, false, false, false, false, false,
-                  false, false, false, false, false},
-            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-                  false, false, false, true, false},
-            {true, true, false, false, false, false, false, false, false, false, false, false, false, false, false,
-                  false, false, false, false, false},
-            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-                  false, false, false, true, false},
-            {true, true, false, false, false, false, false, false, false, false, false, false, false, false, false,
-                  false, false, false, false, false},
-            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-                  false, false, false, true, false},
-            {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-                  false, false, false, false, false},
-            {true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-                  true, true, false},
-      };
-
-      return mockImageData;
-   }
-
-   private String[] getPreFormattedMockStringInput() { // TODO: TEMP DO NOT SUBMIT THIS
-      String[] sImage_preformat =
-            new String[]{
-                  "                                          ",
-                  "                                          ",
-                  "                                          ",
-                  "                                          ",
-                  "                                          ",
-                  "                                          ",
-                  "* * * * * * * * * * * * * * * * * * *     ",
-                  "*                                    *    ",
-                  "**** *** **   ***** ****   *********      ",
-                  "* ************ ************ **********    ",
-                  "** *      *    *  * * *         * *       ",
-                  "***   *  *           * **    *      **    ",
-                  "* ** * *  *   * * * **  *   ***   ***     ",
-                  "* *           **    *****  *   **   **    ",
-                  "****  *  * *  * **  ** *   ** *  * *      ",
-                  "**************************************    ",
-
-            };
-
-      return sImage_preformat;
-   }
-
    /**
     * Read in a text string.
     *
@@ -531,7 +480,7 @@ class DataMatrix implements BarcodeIO {
     * @param col Column in data to read from.
     * @return Character represented by column.
     */
-   public char readCharFromCol(int col) {
+   private char readCharFromCol(int col) {
       int colValue = 0;
       int startingRowIndex = image.MAX_HEIGHT - (actualHeight + 1);
 
@@ -590,7 +539,7 @@ class DataMatrix implements BarcodeIO {
     * @param code The character in ASCII. Whether the character was able to be written.
     * @return
     */
-   public boolean writeCharToCol(int col, int code) {
+   private boolean writeCharToCol(int col, int code) {
       String binaryString = Integer.toBinaryString(code);
       int stringLength = binaryString.length();
       int startingRowIndex = image.MAX_HEIGHT - (actualHeight + 1);
