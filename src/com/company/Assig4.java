@@ -9,65 +9,64 @@ package com.company;
 public class Assig4 {
 
    public static void main(String[] args) {
-//      String[] sImageIn =
-//            {
-//                  "                                               ",
-//                  "                                               ",
-//                  "                                               ",
-//                  "     * * * * * * * * * * * * * * * * * * * * * ",
-//                  "     *                                       * ",
-//                  "     ****** **** ****** ******* ** *** *****   ",
-//                  "     *     *    ****************************** ",
-//                  "     * **    * *        **  *    * * *   *     ",
-//                  "     *   *    *  *****    *   * *   *  **  *** ",
-//                  "     *  **     * *** **   **  *    **  ***  *  ",
-//                  "     ***  * **   **  *   ****    *  *  ** * ** ",
-//                  "     *****  ***  *  * *   ** ** **  *   * *    ",
-//                  "     ***************************************** ",
-//                  "                                               ",
-//                  "                                               ",
-//                  "                                               "
-//
-//            };
-//
-//
-//
-//      String[] sImageIn_2 =
-//            {
-//                  "                                          ",
-//                  "                                          ",
-//                  "* * * * * * * * * * * * * * * * * * *     ",
-//                  "*                                    *    ",
-//                  "**** *** **   ***** ****   *********      ",
-//                  "* ************ ************ **********    ",
-//                  "** *      *    *  * * *         * *       ",
-//                  "***   *  *           * **    *      **    ",
-//                  "* ** * *  *   * * * **  *   ***   ***     ",
-//                  "* *           **    *****  *   **   **    ",
-//                  "****  *  * *  * **  ** *   ** *  * *      ",
-//                  "**************************************    ",
-//                  "                                          ",
-//                  "                                          ",
-//                  "                                          ",
-//                  "                                          "
-//
-//            };
+      String[] sImageIn =
+            {
+                  "                                               ",
+                  "                                               ",
+                  "                                               ",
+                  "     * * * * * * * * * * * * * * * * * * * * * ",
+                  "     *                                       * ",
+                  "     ****** **** ****** ******* ** *** *****   ",
+                  "     *     *    ****************************** ",
+                  "     * **    * *        **  *    * * *   *     ",
+                  "     *   *    *  *****    *   * *   *  **  *** ",
+                  "     *  **     * *** **   **  *    **  ***  *  ",
+                  "     ***  * **   **  *   ****    *  *  ** * ** ",
+                  "     *****  ***  *  * *   ** ** **  *   * *    ",
+                  "     ***************************************** ",
+                  "                                               ",
+                  "                                               ",
+                  "                                               "
 
-//      BarcodeImage bc = new BarcodeImage(sImageIn);
-      DataMatrix dm = new DataMatrix();
-//
-//      // First secret message
-//      dm.translateImageToText();
-//      dm.displayTextToConsole();
-//      dm.displayImageToConsole();
-//
-//      // second secret message
-//      bc = new BarcodeImage(sImageIn_2);
-//      dm.scan(bc);
-//      dm.translateImageToText();
-//      dm.displayTextToConsole();
-//      dm.displayImageToConsole();
-//
+            };
+
+
+      String[] sImageIn_2 =
+            {
+                  "                                          ",
+                  "                                          ",
+                  "* * * * * * * * * * * * * * * * * * *     ",
+                  "*                                    *    ",
+                  "**** *** **   ***** ****   *********      ",
+                  "* ************ ************ **********    ",
+                  "** *      *    *  * * *         * *       ",
+                  "***   *  *           * **    *      **    ",
+                  "* ** * *  *   * * * **  *   ***   ***     ",
+                  "* *           **    *****  *   **   **    ",
+                  "****  *  * *  * **  ** *   ** *  * *      ",
+                  "**************************************    ",
+                  "                                          ",
+                  "                                          ",
+                  "                                          ",
+                  "                                          "
+
+            };
+
+      BarcodeImage bc = new BarcodeImage(sImageIn);
+      DataMatrix dm = new DataMatrix(bc);
+
+      // First secret message
+      dm.translateImageToText();
+      dm.displayTextToConsole();
+      dm.displayImageToConsole();
+
+      // second secret message
+      bc = new BarcodeImage(sImageIn_2);
+      dm.scan(bc);
+      dm.translateImageToText();
+      dm.displayTextToConsole();
+      dm.displayImageToConsole();
+
       // create your own message
       dm.readText("What a great resume builder this is!");
       dm.generateImageFromText();
@@ -77,11 +76,11 @@ public class Assig4 {
 }
 
 /**
- * BarcodeIO interface that will be implemented by other classes.
- * Used to store some version of an image and some version of the text associated with that image. 
+ * BarcodeIO interface that will be implemented by other classes. Used to store some version of an image and some
+ * version of the text associated with that image.
  */
 interface BarcodeIO {
-  /**
+   /**
     * Accepts and stores a copy of an image represented by BarcodeImage.
     */
    public boolean scan(BarcodeImage bc);
@@ -102,7 +101,7 @@ interface BarcodeIO {
    public boolean translateImageToText();
 
    /**
-    *  Print out the text string to the console.
+    * Print out the text string to the console.
     */
    public void displayTextToConsole();
 
@@ -241,7 +240,7 @@ class BarcodeImage implements Cloneable {
     *
     * @return a copy of the BarcodeImage object.
     */
-   public BarcodeImage clone() throws CloneNotSupportedException {
+   public Object clone() throws CloneNotSupportedException {
       try {
          return (BarcodeImage) super.clone();
       } catch (CloneNotSupportedException e) {
@@ -261,54 +260,95 @@ class DataMatrix implements BarcodeIO {
    private int actualWidth; // width of real signal
    private int actualHeight; // height of real signal
 
-   private void cleanImage() {
-      boolean[][] newImage = new boolean[47][16]; //1st string example
-      int amountColtoMove = 0, downNum = 1, numRowToDelete;
-      int maxRow = newImage.length;
+   public DataMatrix() {
+      image = new BarcodeImage();
+      text = "";
+      actualWidth = 0;
+      actualHeight = 0;
+   }
 
-      for (int i = 0; i < newImage.length; i++) {
-         for (int j = 0; j < newImage[i].length; j++) {
-            if (newImage[i][j] == true) {
-               amountColtoMove = j;
-               downNum++;
+   public DataMatrix(BarcodeImage bc) {
+      if (bc == null) {
+         image = new BarcodeImage();
+      } else {
+         scan(bc);
+      }
+
+      text = "";
+   }
+
+   public DataMatrix(String text) {
+      image = new BarcodeImage();
+
+      if (!readText(text))
+         text = "";
+      actualWidth = 0;
+      actualHeight = 0;
+   }
+
+   private void cleanImage() {
+      int amountColtoMove = 0, numRowToDelete = 0;
+      int increment = 0, offset = 0;
+      int maxRow = image.MAX_HEIGHT;
+      //get value for shifting left
+
+      for (int row = 0; row < image.MAX_HEIGHT; row++) {  //to get first true value locate bottom left of image
+         for (int column = 0; column < image.MAX_WIDTH; column++)  //since all image has solid bottom left
+         {  //to know how much to move left
+            if (image.getPixel(row, column) == true) {
+               amountColtoMove = column;            //pass in the value of the column
+               increment++;                     //get the actual height of the image
                break;
+            } else ;
+         }
+      }
+
+      //	Fill in column by column
+      if (amountColtoMove > 0) {
+         for (int col = 0; col < image.MAX_WIDTH - amountColtoMove; col++) {
+            for (int row = 0; row < image.MAX_HEIGHT; row++) {
+               image.setPixel(row, col, image.getPixel(row, (col + amountColtoMove)));
             }
          }
       }
-      numRowToDelete = maxRow - downNum;
-      newImage = shiftImage(numRowToDelete, amountColtoMove, newImage);
-
-   }
-
-   private boolean[][] shiftImage(int offset1, int offset2, boolean img[][]) {
-
-      boolean[][] shiftedArray = new boolean[img.length][img[0].length];
-      for (int row = 0; row < img.length; row++) {
-         for (int col = 0; col < img[row].length; col++) {
-            shiftedArray[row][col] = img[row][(col + 1) % img[row].length];
+      //	Start on shift down
+      for (int a = image.MAX_HEIGHT - 1; a >= 0; a--) {   //to get first true value locate bottom right of image
+         for (int b = 0; b < image.MAX_WIDTH; b++) {      //to know how much to move down
+            if (image.getPixel(a, b) == true) {
+               offset = a;
+               break;
+            } else ;
          }
       }
-      return shiftedArray;
+      numRowToDelete = maxRow - increment - offset;
+      //	shift down the image
+      if (numRowToDelete > 0) {
+         for (int row = image.MAX_HEIGHT - 1; row >= numRowToDelete; row--) {
+            for (int col = 0; col < image.MAX_WIDTH; col++) {
+               image.setPixel(row, col, image.getPixel((row - numRowToDelete), col));
+               image.setPixel(row - numRowToDelete, col, false);
+            }
+         }
+      }
    }
-   
+
    /**
     * Utility method that sets the image to white (false).
     */
    private void clearImage() {
-      for(int row = 0; row < image.MAX_HEIGHT; row++) {
-         for(int col = 0; col < image.MAX_WIDTH; col++) {
+      for (int row = 0; row < image.MAX_HEIGHT; row++) {
+         for (int col = 0; col < image.MAX_WIDTH; col++) {
             image.setPixel(row, col, false);
          }
       }
    }
-   
+
    /**
-    * Compute the height of the signal.
-    * Pre-condition: Image is scanned-in and cleaned.
+    * Compute the height of the signal. Pre-condition: Image is scanned-in and cleaned.
+    *
     * @return Height of signal.
     */
    private int computeSignalHeight() {
-      image = new BarcodeImage(getPreFormattedMockStringInput()); // TODO: Remove this once we have constructors
       int signalHeight = 0;
 
       for (int i = 0; i < image.MAX_HEIGHT; i++) { // should be i < image.MAX_HEIGHT
@@ -322,12 +362,11 @@ class DataMatrix implements BarcodeIO {
    }
 
    /**
-    * Compute the width of the signal.
-    * Pre-condition: Image is scanned-in and cleaned.
+    * Compute the width of the signal. Pre-condition: Image is scanned-in and cleaned.
+    *
     * @return Width of signal.
     */
    private int computeSignalWidth() {
-      image = new BarcodeImage(getPreFormattedMockStringInput()); // TODO: Remove this once we have constructors
       int signalWidth = 0;
 
       while (image.getPixel(image.MAX_HEIGHT - 1, signalWidth)) signalWidth++;
@@ -487,8 +526,7 @@ class DataMatrix implements BarcodeIO {
    }
 
    /**
-    * Get ASCII character from a single column in the data.
-    * Pre-condition: Image is scanned-in and cleaned.
+    * Get ASCII character from a single column in the data. Pre-condition: Image is scanned-in and cleaned.
     *
     * @param col Column in data to read from.
     * @return Character represented by column.
@@ -509,12 +547,23 @@ class DataMatrix implements BarcodeIO {
    }
 
    public boolean scan(BarcodeImage bc) {
+      if (bc == null) return false;
+
+      try {
+         image = (BarcodeImage) bc.clone();
+      } catch (CloneNotSupportedException e) {
+         return false;
+      }
+
+      cleanImage();
+      actualHeight = computeSignalHeight();
+      actualWidth = computeSignalWidth();
+
       return true;
    }
 
    /**
-    * Generate text from internal image.
-    * Pre-condition: Image is scanned-in and cleaned.
+    * Generate text from internal image. Pre-condition: Image is scanned-in and cleaned.
     *
     * @return Whether the text was able to be generated.
     */
